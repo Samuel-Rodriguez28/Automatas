@@ -6,11 +6,11 @@ import javax.swing.JOptionPane;
 
 public class Practica1 {
     public static void main(String [] args){
-        
+        String texto = "";
         int opcion = 0, totalOpciones = 4;
         String menu = """
                       1) Escribir texto
-                      2) Escribir texto en archivo
+                      2) Almacenar texto en archivo
                       3) Leer texto de archivo
                       4) Salir""";
         
@@ -21,9 +21,13 @@ public class Practica1 {
                 case 1:
                     String palabra = JOptionPane.showInputDialog("Introduzca una palabra que quiera introducir al archivo");
                     
+                    texto = texto + palabra + "\n";
+                    break;
+                    
+                case 2:
                     try {
                         FileWriter writer = new FileWriter("word.txt");
-                        writer.write(palabra + "\n");
+                        writer.write(texto);
                         writer.close();
                         
                         JOptionPane.showMessageDialog(null, "La palabra se ha escrito correctamente!");
@@ -33,30 +37,59 @@ public class Practica1 {
                     }
                     break;
                     
-                case 2:
+                case 3:
+                    String letra = "";
                     File file = new File("word.txt");
                     
                     try {
                         Scanner sc = new Scanner(file);
                         while (sc.hasNextLine()) {
                         String line = sc.nextLine();
-                        System.out.println(line);
-                        
-                        
+                        letra += line + "\n";
                     }
                     sc.close();
-                    } catch (FileNotFoundException e) {
-                    System.out.println("El archivo no se ha encontrado");
-                    }
-                    break;
+                    JOptionPane.showMessageDialog(null, letra);
                     
-                case 3:
+                    } catch (FileNotFoundException e) {
+                    JOptionPane.showMessageDialog(null, "El archivo no se ha encontrado");
+                    }
+                    
+                    int contador = 0;
+                    
+                    for (int i = 0; i < letra.length(); i++) {
+                        if(letra.charAt(i) == '\n'){
+                            contador++;
+                        }
+                    }
+                    
+                    JOptionPane.showMessageDialog(null, "Hay " + contador + " renglones en el archivo de texto");
+                    
+                    contador = 0;
+                    
+                    for (int i = 0; i < letra.length(); i++) {
+                        if(letra.charAt(i) == ' ' || letra.charAt(i) == '\n'){
+                            contador++;
+                        }
+                    }
+                    
+                    JOptionPane.showMessageDialog(null, "Hay " + contador + " palabras en el archivo de texto");
                     break;
                     
                 case 4:
+                    JOptionPane.showMessageDialog(null, "Adiós!");
+                    
+                    try {
+                    FileWriter writer = new FileWriter("word.txt");
+                    writer.write("");
+                    writer.close();
+                    JOptionPane.showMessageDialog(null, "El contenido del archivo se ha borrado");
+                    } catch (IOException e) {
+                    JOptionPane.showMessageDialog(null, "Ha habido un error al borrar el contenido del archivo");
+                    }
                     break;
                     
                 default:
+                    JOptionPane.showMessageDialog(null, "Por favor introduzca una opcion válida");
                     break;
             }
         }
