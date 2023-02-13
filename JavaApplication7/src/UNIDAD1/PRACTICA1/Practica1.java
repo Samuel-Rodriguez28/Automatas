@@ -19,9 +19,19 @@ public class Practica1 {
             
             switch(opcion){
                 case 1:
-                    String palabra = JOptionPane.showInputDialog("Introduzca una palabra que quiera introducir al archivo");
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.println("Introduce el texto (escribir 'fin.' para terminar):");
+
+                    StringBuilder sb = new StringBuilder();
+                    while (true) {
+                    String line = scanner.nextLine();
+                    if (line.equals("fin.")) {
+                    break;
+                    }
+                    sb.append(line).append("\n");
+                    }
                     
-                    texto = texto + palabra + "\n";
+                    texto = sb.toString();
                     break;
                     
                 case 2:
