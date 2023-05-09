@@ -1,0 +1,180 @@
+package codigo;
+
+import java_cup.runtime.Symbol;
+
+parser code
+{:
+    private Symbol s;
+    
+    public void syntax_error(Symbol s){
+        this.s = s;
+    }
+
+    public Symbol getS(){
+        return this.s;
+}
+:};
+
+terminal Programa, Inicio, Fin, Leer, Escribir,
+    Si, Sino, Mientras, Repetir, Hasta, Entero,
+    Real, Cadena, Logico, Variables, Entonces,
+    Hacer, Verdadero, Falso, Parentesis_a,
+    Parentesis_c, DosPuntos, Coma, PuntoComa,
+    IgualIgual, Diferente, MayorIgual, MenorIgual,
+    Mayor, Menor, And, Or, Not, Igual, Suma,
+    Resta, Multiplicacion, Division, Id_String,
+    Id_Reales, Id_Entero, Id_Logico, Id_Programa,
+    String, Numero, Num_Real;
+
+non terminal PROGRAMA, VARIABLES, SI, ESCRIBIR,
+    MIENTRAS, LEER, DECLARACION, DECLARACION_VARIABLES, DEC_STRING, VAR_STRING,
+    DEC_ENTERO, VAR_ENTERO, DEC_REAL, VAR_REAL, DEC_LOGICO, VAR_LOGICO, CAMBIO_ENTERO, 
+    CAMBIO_REAL, CAMBIO_LOGICO, CAMBIO_STRING, OP_ARITMETICAS, OPERACIONES_ENTERO, 
+    OPERACIONES_REALES, CAMBIO_OP, CAMBIO_OP_R, ENCADENACION, ASIGNACION,
+    TIPO_ID, TIPO_NUMEROS,OP_RELACIONALES, CAMBIO_NUMEROS, REPETIR, 
+    SINO, OPERACIONES, SENTENCIA, INICIO_PROGRAMA, OP_LOGICO, OP_BOOLEAN, CONDICIONALES,
+    VALORES_LOGICOS;
+
+start with PROGRAMA;
+
+PROGRAMA ::= INICIO_PROGRAMA DECLARACION_VARIABLES Inicio SENTENCIA Fin
+;
+INICIO_PROGRAMA ::= Programa Id_Programa PuntoComa
+;
+DECLARACION_VARIABLES ::= Variables DECLARACION
+;
+DECLARACION ::= DECLARACION VARIABLES |
+                VARIABLES
+;
+DEC_STRING ::= Id_String |
+               Coma Id_String
+;
+VAR_STRING ::= VAR_STRING DEC_STRING |
+               DEC_STRING
+;
+DEC_ENTERO ::= Id_Entero |
+               Coma Id_Entero
+;
+VAR_ENTERO ::= VAR_ENTERO DEC_ENTERO |
+               DEC_ENTERO
+;
+DEC_REAL ::= Id_Reales |
+               Coma Id_Reales
+;
+VAR_REAL ::= VAR_REAL DEC_REAL |
+             DEC_REAL
+;
+DEC_LOGICO ::= Id_Logico |
+               Coma Id_Logico
+;
+VAR_LOGICO ::= VAR_LOGICO DEC_LOGICO |
+               DEC_LOGICO
+;
+VARIABLES ::= VAR_STRING DosPuntos Cadena PuntoComa |
+              VAR_ENTERO DosPuntos Entero PuntoComa |
+              VAR_REAL DosPuntos Real PuntoComa |
+              VAR_LOGICO DosPuntos Logico PuntoComa
+;
+CAMBIO_ENTERO ::= Id_Entero |
+                  Numero
+;
+CAMBIO_REAL ::= Id_Reales |
+                Numero |
+                Num_Real
+;
+CAMBIO_LOGICO ::= Id_Logico |
+                  Verdadero |
+                  Falso
+;
+CAMBIO_STRING ::= Id_String |
+                  String
+;
+OP_ARITMETICAS ::= Suma |
+                   Resta |
+                   Multiplicacion |
+                   Division
+;
+OPERACIONES_ENTERO ::= OP_ARITMETICAS CAMBIO_ENTERO 
+;
+OPERACIONES_REALES ::= OP_ARITMETICAS CAMBIO_REAL 
+;
+CAMBIO_OP ::= CAMBIO_OP OPERACIONES_ENTERO |
+              OPERACIONES_ENTERO
+;
+CAMBIO_OP_R ::= CAMBIO_OP_R OPERACIONES_REALES |
+                OPERACIONES_REALES
+;
+ENCADENACION ::= ENCADENACION Suma CAMBIO_STRING |
+                 Suma CAMBIO_STRING
+;
+ASIGNACION ::= Id_Entero Igual CAMBIO_ENTERO PuntoComa |
+               Id_Entero Igual CAMBIO_ENTERO CAMBIO_OP PuntoComa|
+               Id_Entero Igual CAMBIO_ENTERO OP_ARITMETICAS Parentesis_a CAMBIO_ENTERO CAMBIO_OP Parentesis_c PuntoComa |
+               Id_Reales Igual CAMBIO_REAL PuntoComa |
+               Id_Reales Igual CAMBIO_REAL CAMBIO_OP_R PuntoComa|
+               Id_Reales Igual CAMBIO_REAL OP_ARITMETICAS Parentesis_a CAMBIO_REAL CAMBIO_OP_R Parentesis_c PuntoComa |
+               Id_Logico Igual CAMBIO_LOGICO PuntoComa |
+               Id_String Igual CAMBIO_STRING PuntoComa |
+               Id_String Igual CAMBIO_STRING ENCADENACION PuntoComa
+;
+TIPO_ID ::= Id_Entero |
+            Id_Reales |
+            Id_String |
+            Id_Logico
+;
+ESCRIBIR ::= Escribir Parentesis_a TIPO_ID Parentesis_c PuntoComa 
+;
+LEER ::= Leer Parentesis_a TIPO_ID Parentesis_c PuntoComa 
+;
+TIPO_NUMEROS ::= Id_Reales |
+                 Id_Entero
+;
+OP_RELACIONALES ::= IgualIgual |
+                    MayorIgual |
+                    MenorIgual |
+                    Menor |
+                    Mayor |
+                    Diferente
+;
+CAMBIO_NUMEROS ::= Numero |
+                  Num_Real
+;
+VALORES_LOGICOS ::= Falso|
+                  Verdadero
+;
+OP_LOGICO ::= And |
+              Or |
+              Not
+;
+OP_BOOLEAN ::= TIPO_NUMEROS OP_RELACIONALES CAMBIO_NUMEROS |
+               TIPO_NUMEROS OP_RELACIONALES TIPO_NUMEROS |
+               Id_Logico IgualIgual VALORES_LOGICOS |
+               Id_Logico IgualIgual Id_Logico |
+               CAMBIO_LOGICO
+;
+CONDICIONALES ::= CONDICIONALES OP_LOGICO OP_BOOLEAN |
+                  OP_LOGICO OP_BOOLEAN
+;
+MIENTRAS ::= Mientras Parentesis_a OP_BOOLEAN Parentesis_c Hacer Inicio SENTENCIA Fin |
+            Mientras Parentesis_a OP_BOOLEAN CONDICIONALES Parentesis_c Hacer Inicio SENTENCIA Fin
+;
+REPETIR ::= Repetir Inicio SENTENCIA Fin Hasta Parentesis_a OP_BOOLEAN Parentesis_c PuntoComa |
+            Repetir Inicio SENTENCIA Fin Hasta Parentesis_a OP_BOOLEAN CONDICIONALES Parentesis_c PuntoComa
+;
+SI ::= Si Parentesis_a OP_BOOLEAN Parentesis_c Entonces Inicio SENTENCIA Fin |
+       Si Parentesis_a OP_BOOLEAN CONDICIONALES Parentesis_c Entonces Inicio SENTENCIA Fin
+;
+SINO ::= Si Parentesis_a OP_BOOLEAN Parentesis_c Entonces Inicio SENTENCIA Fin Sino Inicio SENTENCIA Fin |
+         Si Parentesis_a OP_BOOLEAN CONDICIONALES Parentesis_c Entonces Inicio SENTENCIA Fin Sino Inicio SENTENCIA Fin
+;
+OPERACIONES ::= ASIGNACION |
+                ESCRIBIR |
+                LEER |
+                MIENTRAS |
+                REPETIR |
+                SI |
+                SINO
+;
+SENTENCIA ::= SENTENCIA OPERACIONES |
+              OPERACIONES
+;
